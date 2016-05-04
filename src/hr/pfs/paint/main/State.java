@@ -6,6 +6,7 @@ import hr.pfs.paint.drawing.Color;
 import hr.pfs.paint.drawing.objects.IDrawableObject;
 import hr.pfs.paint.drawing.tools.IDrawingTool;
 import hr.pfs.paint.panels.ColorPanel;
+import hr.pfs.paint.panels.IPanel;
 
 public class State {
 
@@ -16,6 +17,9 @@ public class State {
 	public Color currentColor;
 	public float currentThickness;
 
+	// Panels
+	public ArrayList<IPanel> panels;
+	
 	// Drawable objects
 	public ArrayList<IDrawableObject> drawables;
 	

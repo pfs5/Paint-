@@ -1,5 +1,6 @@
 package hr.pfs.paint.panels;
 
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,7 +10,7 @@ import com.jogamp.opengl.GL2;
 import hr.pfs.paint.drawing.*;
 import hr.pfs.paint.main.State;
 
-public class ColorPanel {
+public class ColorPanel implements IPanel {
 
 	private static int MIN_WIDTH = 80;
 	private static double WIDTH_FACTOR = 1. / 8.;
@@ -27,27 +28,28 @@ public class ColorPanel {
 	private int colorBoxSize;
 	private int colorBoxOffset;
 
-	private Color currentColor;
+	private State state;
 
 	private HashMap<Coordinates, Color> colorMap;
 	private ArrayList<Color> colorArray;
 
-	public ColorPanel(GL2 gl2, int width, int height, Color currentColor) {
+	@Override
+	public void update(GL2 gl2, int width, int height, State state) {
 		this.gl2 = gl2;
 		this.panelHeight = height;
 		this.panelWidth = (int) Math.max(width * WIDTH_FACTOR, MIN_WIDTH);
-
+		
 		this.windowWidth = width;
 		this.windowHeight = height;
-
+		
 		this.colorBoxSize = (int) (panelWidth * COLOR_BOX_FACTOR);
 		this.colorBoxOffset = (int) (panelWidth * COLOR_BOX_OFFSET_FACTOR);
-
-		this.currentColor = currentColor;
+		
+		this.state = state;
 
 		initColors();
 	}
-
+	
 	private void initColors() {
 		// Set panel colors
 		colorArray = new ArrayList<Color>();
@@ -80,6 +82,7 @@ public class ColorPanel {
 					colorMap.put(new Coordinates(x + a, y - b), colorArray.get(i));
 		}
 	}
+
 
 	public void draw() {
 		gl2.glLoadIdentity();
@@ -119,7 +122,8 @@ public class ColorPanel {
 		int currentColorSize = colorBoxSize * 2 + colorBoxOffset;
 		int x = windowWidth - currentColorSize - colorBoxOffset;
 		int y = nextY;
-		//
+		Color currentColor = state.currentColor;
+		
 		gl2.glBegin(GL2.GL_POLYGON);
 		gl2.glColor3f(currentColor.getR(), currentColor.getG(), currentColor.getB());
 		gl2.glVertex2i(x, y);
@@ -127,11 +131,18 @@ public class ColorPanel {
 		gl2.glVertex2i(x + currentColorSize, y - currentColorSize);
 		gl2.glVertex2i(x + currentColorSize, y);
 		gl2.glEnd();
-		
+
 	}
 
-	public Color getColor(int x, int y) {
+	private Color getColor(int x, int y) {
 		return colorMap.get(new Coordinates(x, y));
+	}
+
+	@Override
+	public void mouseClicked(int x, int y) {
+		Color color = getColor(x, y);
+		if (color != null)
+			state.currentColor = color;
 	}
 
 }

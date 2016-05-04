@@ -52,11 +52,6 @@ public class Pen implements IDrawingTool {
 	}
 
 	@Override
-	public void mouseMoved(int x, int y, State state) {
-		if (pressed) 
-			line.add(new Point(x, y));
-	}
-	@Override
 	public void mouseDragged(int x, int y, State state) {
 		line.add(new Point(x, y));
 	}

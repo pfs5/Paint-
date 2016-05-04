@@ -20,6 +20,8 @@ import hr.pfs.paint.drawing.Color;
 import hr.pfs.paint.drawing.objects.IDrawableObject;
 import hr.pfs.paint.mainFrame.*;
 import hr.pfs.paint.panels.ColorPanel;
+import hr.pfs.paint.panels.IPanel;
+import hr.pfs.paint.drawing.tools.LineTool;
 import hr.pfs.paint.drawing.tools.Pen;
 
 import javax.swing.JFrame;
@@ -51,11 +53,16 @@ public class Main {
 				State state = new State();
 				state.currentColor = new Color();
 
+				// Init panels
+				state.panels = new ArrayList<IPanel>();
+				state.panels.add(new ColorPanel());
+
 				// Init drawable objects
 				state.drawables = new ArrayList<IDrawableObject>();
 
 				// Set default drawing tool
-				state.activeTool = new Pen();
+//				state.activeTool = new Pen();
+				state.activeTool = new LineTool();
 
 				// #################
 
@@ -65,13 +72,11 @@ public class Main {
 						int x = e.getX();
 						int y = glcanvas.getHeight() - e.getY();
 
-						// Check if color clicked
-						Color color = state.colorPanel.getColor(x, y);
-						if (color != null) {
-							state.currentColor = color;
-							glcanvas.display();
-						}
-
+						// Notify panels
+						for (IPanel panel : state.panels)
+							panel.mouseClicked(x, y);
+						
+						glcanvas.display();
 					}
 
 					public void mousePressed(MouseEvent e) {
@@ -98,9 +103,6 @@ public class Main {
 						int x = e.getX();
 						int y = glcanvas.getHeight() - e.getY();
 
-						// Notify tool
-						state.activeTool.mouseMoved(x, y, state);
-						glcanvas.display();
 					}
 
 					public void mouseDragged(MouseEvent e) {
@@ -171,9 +173,11 @@ public class Main {
 						gl2.glClearColor(1, 1, 1, 1);
 						gl2.glClear(GL.GL_COLOR_BUFFER_BIT);
 
-						// Draw panels
-						state.colorPanel = new ColorPanel(gl2, width, height, state.currentColor);
-						state.colorPanel.draw();
+						// Update and draw panels
+						for (IPanel panel : state.panels) {
+							panel.update(gl2, width, height, state);
+							panel.draw();
+						}
 
 						// Get objects
 						IDrawableObject o;

@@ -18,7 +18,5 @@ public interface IDrawingTool {
 
 	public void mouseReleased(int x, int y, State state);
 
-	public void mouseMoved(int x, int y, State state);
-
 	public void mouseDragged(int x, int y, State state);
 }
