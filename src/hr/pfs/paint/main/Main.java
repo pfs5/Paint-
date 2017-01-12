@@ -29,8 +29,8 @@ import javax.swing.SwingUtilities;
 
 public class Main {
 
-	public static int MAIN_HEIGTH = 600;
-	public static int MAIN_WIDTH = 600;
+	public static int MAIN_HEIGTH = 800;
+	public static int MAIN_WIDTH = 719;
 
 	// Status
 	private boolean resized = false;
@@ -61,8 +61,8 @@ public class Main {
 				state.drawables = new ArrayList<IDrawableObject>();
 
 				// Set default drawing tool
-//				state.activeTool = new Pen();
-				state.activeTool = new LineTool();
+				state.activeTool = new Pen();
+//				state.activeTool = new LineTool();
 
 				// #################
 
@@ -135,6 +135,16 @@ public class Main {
 						if (e.getKeyCode() == KeyEvent.VK_Q) {
 							state.currentThickness -= 0.5;
 							glcanvas.display();
+						}
+						
+						// Change tool
+						if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+							if (state.activeTool instanceof Pen) {
+								state.activeTool = new LineTool();
+							}
+							else {
+								state.activeTool = new Pen();
+							}
 						}
 					}
 				});
